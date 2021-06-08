@@ -1,0 +1,31 @@
+module esmFldsExchange_mod
+
+  !---------------------------------------------------------------------
+  ! This is a mediator specific routine that determines ALL possible
+  ! fields exchanged between components and their associated routing,
+  ! mapping and merging
+  !---------------------------------------------------------------------
+
+  implicit none
+  public
+
+  public :: esmFldsExchange_{{name}}
+
+  character(*), parameter :: u_FILE_u = &
+       __FILE__
+
+!================================================================================
+contains
+!================================================================================
+
+  subroutine esmFldsExchange_{{name}}(gcomp, phase, rc)
+
+    ! input/output parameters:
+    type(ESMF_GridComp)              :: gcomp
+    character(len=*) , intent(in)    :: phase
+    integer          , intent(inout) :: rc
+
+  end subroutine esmFldsExchange_{{name}}
+
+
+end module esmFldsExchange_mod
