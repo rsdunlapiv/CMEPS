@@ -20,10 +20,30 @@ contains
 
   subroutine esmFldsExchange_{{name}}(gcomp, phase, rc)
 
+    use ESMF     
+    use NUOPC
+    use med_utils_mod         , only : chkerr => med_utils_chkerr
+    use esmFlds               , only : addfld => med_fldList_AddFld
+
     ! input/output parameters:
     type(ESMF_GridComp)              :: gcomp
     character(len=*) , intent(in)    :: phase
     integer          , intent(inout) :: rc
+
+    !=====================================================================
+    ! scalar information
+    !=====================================================================
+
+    call NUOPC_CompAttributeGet(gcomp, name="ScalarFieldName", value=cvalue, rc=rc)
+    if (ChkErr(rc,__LINE__,u_FILE_u)) return
+    do n = 1,ncomps
+       call addfld(fldListFr(n)%flds, trim(cvalue))
+       call addfld(fldListTo(n)%flds, trim(cvalue))
+    end do
+
+
+    ! call addfld(fldListFr(compice)%flds, 'Si_imask')
+
 
   end subroutine esmFldsExchange_{{name}}
 
