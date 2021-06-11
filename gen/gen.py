@@ -24,14 +24,20 @@ def gen(inputyaml):
         name = yamldata["name"]
         if not re.match("^[A-Za-z0-9_-]+$", name):
             print("ERROR: Invalid character in name")
-            return
-               
+            return 
+
+    #impCompList = yamldata["import"].keys()
+    #expCompList = yamldata["export"].keys()
+
+        
     jenv = jinja2.Environment(
-        loader=jinja2.FileSystemLoader('templates')
+        loader=jinja2.FileSystemLoader('templates'),
+        trim_blocks=True,
+        lstrip_blocks=True
     )
 
-    template = jenv.get_template("esmFldsExchange.F90.jinja2")
-    out = template.render(name=name)
+    template = jenv.get_template("esmFldsExchange.F90.jinja")
+    out = template.render(name=name, yaml=yamldata)
     
     print("Output:\n\n{}\n\n".format(out))
 

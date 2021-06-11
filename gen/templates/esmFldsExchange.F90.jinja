@@ -22,6 +22,7 @@ contains
 
     use ESMF     
     use NUOPC
+    use med_kind_mod          , only : CX=>SHR_KIND_CX, CS=>SHR_KIND_CS, CL=>SHR_KIND_CL, R8=>SHR_KIND_R8
     use med_utils_mod         , only : chkerr => med_utils_chkerr
     use esmFlds               , only : addfld => med_fldList_AddFld
 
@@ -29,6 +30,9 @@ contains
     type(ESMF_GridComp)              :: gcomp
     character(len=*) , intent(in)    :: phase
     integer          , intent(inout) :: rc
+
+    ! local variables:
+    character(len=CL)   :: cvalue
 
     !=====================================================================
     ! scalar information
@@ -41,9 +45,27 @@ contains
        call addfld(fldListTo(n)%flds, trim(cvalue))
     end do
 
+    {% for comp in yaml["import"] %}
 
-    ! call addfld(fldListFr(compice)%flds, 'Si_imask')
+    !=====================================================================
+    ! FIELDS FROM {{ comp|first }}
+    !=====================================================================
 
+    {% for c, fldlist in comp.items() %}
+    {% for fld in fldlist %}
+    {% if fld is string %}
+    call addfld(fldListFr(comp{{c}})%flds, '{{fld}}')		
+    {% else %}
+
+    ! Field Group: {{fld|first}}
+    {% for f in fld.values()|first %}
+    call addfld(fldListFr(comp{{c}})%flds, '{{f}}')
+    {% endfor %}
+    
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endfor %}
 
   end subroutine esmFldsExchange_{{name}}
 
