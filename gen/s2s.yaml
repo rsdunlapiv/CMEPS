@@ -4,7 +4,7 @@ name: nems_s2s
 
 import:
 
-  - atm:
+  atm:
      - cpl_scalars
      - Sa_pslv
      - _Faxa_swbands:
@@ -28,7 +28,7 @@ import:
        - Sa_v
        - Sa_shum
 
-  - ocn:
+  ocn:
      - cpl_scalars
      - So_omask
      - So_t
@@ -38,3 +38,48 @@ import:
      - So_dhdx
      - So_dhdy
      - Fioo_q
+
+  ice:
+     - cpl_scalars
+     - Si_imask
+     - Si_ifrac
+     - _Faii_fluxes:
+       - Faii_taux
+       - Faii_tauy
+       - Faii_lat
+       - Faii_sen
+       - Faii_lwup
+       - Faii_evap
+     - _Si_states:
+       - Si_vice
+       - Si_vsno
+       - Si_t 
+     - _Fioi_swpen:
+       - Fioi_swpen_vdr
+       - Fioi_swpen_vdf
+       - Fioi_swpen_idr
+       - Fioi_swpen_idf
+     - Fioi_taux
+     - Fioi_tauy
+
+
+export:
+
+  - atm:
+    - Si_ifrac   # custom in prep_atm
+        
+    # field-by-field specification
+    - Faii_taux: {copy: [{remap: [ice.Faii_taux, consf, normfrac]}]}  # explicit "copy" merge
+    - Faii_tauy: {remap: [ice.Faii_tauy, consf, normfrac]}        
+    - Faii_lat:  {remap: [ice.Faii_lat, consf, normfrac]}
+    - Faii_sen:  {remap: [ice.Faii_sen, consf, normfrac]}
+    - Faii_lwup: {remap: [ice.Faii_lwup, consf, normfrac]}
+    - Faii_evap: {remap: [ice.Faii_evap, consf, normfrac]}
+    - Si_vice:   {remap: [ice.Si_vice, consf, normfrac]}
+    - Si_vsno:   {remap: [ice.Si_vsno, consf, normfrac]}
+    - Si_t:      {remap: [ice.Si_t, consf, normfrac]}
+   
+    # using field list aliases, the above lines are the same as:
+    - _Faii_fluxes: {remap: [ice._Faii_fluxes, consf, normfrac]}
+    - _Si_states:   {remap: [ice._Si_states, consf, normfrac]}
+    - So_t:      {remap: [ocn.So_t, consf, normfrac]}

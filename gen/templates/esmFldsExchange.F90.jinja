@@ -45,27 +45,27 @@ contains
        call addfld(fldListTo(n)%flds, trim(cvalue))
     end do
 
-    {% for comp in yaml["import"] %}
+    {% for comp, fldspec in yaml["import"].items() %}
 
     !=====================================================================
-    ! FIELDS FROM {{ comp|first }}
+    ! FIELDS FROM {{ comp|upper }}
     !=====================================================================
 
-    {% for c, fldlist in comp.items() %}
-    {% for fld in fldlist %}
+    {% for fld in fldspec %}
     {% if fld is string %}
-    call addfld(fldListFr(comp{{c}})%flds, '{{fld}}')		
+    call addfld(fldListFr(comp{{comp}})%flds, '{{fld}}')		
     {% else %}
-
-    ! Field Group: {{fld|first}}
+    {# TODO: check if field starts with '_' to indicate field group #}
     {% for f in fld.values()|first %}
-    call addfld(fldListFr(comp{{c}})%flds, '{{f}}')
+    call addfld(fldListFr(comp{{comp}})%flds, '{{f}}')	! Field Group: {{fld|first}}
     {% endfor %}
     
     {% endif %}
     {% endfor %}
+  
+   
     {% endfor %}
-    {% endfor %}
+
 
   end subroutine esmFldsExchange_{{name}}
 
